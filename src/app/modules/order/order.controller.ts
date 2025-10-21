@@ -20,6 +20,7 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyShopOrders = catchAsync(async (req: Request, res: Response) => {
+  console.log({ req });
   const result = await OrderService.getMyShopOrders(
     req.query,
     req.user as IJwtPayload
@@ -87,7 +88,7 @@ const changePaymentStatus = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Payment status changed successfully',
+    message: "Payment status changed successfully",
     data: result,
   });
 });

@@ -144,6 +144,8 @@ const getMyShopOrders = async (
   query: Record<string, unknown>,
   authUser: IJwtPayload
 ) => {
+  console.log({query, authUser});
+
   const orderQuery = new QueryBuilder(
     Order.find().populate("user products.product"),
     query
@@ -212,6 +214,7 @@ const changeOrderStatus = async (
     { status },
     { new: true }
   );
+  console.log({order});
   return order;
 };
 

@@ -19,13 +19,15 @@ router.get(
 
 router.get(
     '/:orderId',
-    auth(UserRole.USER),
+    // auth(UserRole.USER),
+     auth(UserRole.USER, UserRole.ADMIN, UserRole.DELIVERY),
     OrderController.getOrderDetails
 );
 
 router.post(
     '/',
     auth(UserRole.USER),
+    //  auth(UserRole.USER, UserRole.ADMIN, UserRole.DELIVERY),
     OrderController.createOrder
 )
 // order status change route for Moderator and Admin only
@@ -37,7 +39,7 @@ router.patch(
 // delivery route for deliveryMan and Admin only
 router.patch(
   '/:orderId/payment-status',
-  auth(UserRole.ADMIN),
+  auth(UserRole.DELIVERY),
   OrderController.changePaymentStatus
 );
 

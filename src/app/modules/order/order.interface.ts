@@ -20,7 +20,7 @@ export interface IOrder extends Document {
   status: 'Pending' | 'Processing' | 'Completed' | 'Cancelled';
   shippingAddress: string;
   paymentMethod: 'COD' | 'Card' | 'Online';
-  paymentStatus: 'Pending' | 'Paid' | 'Failed';
+  paymentStatus: 'Pending' | 'Processing' | 'Paid' | 'Cancelled' | 'Failed';
   createdAt?: Date;
   updatedAt?: Date;
   payment?: IPayment | null;
