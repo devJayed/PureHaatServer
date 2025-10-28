@@ -1,5 +1,5 @@
 import { Schema, Types, model } from "mongoose";
-import { IOrder } from "./order.interface";
+import { ICounter, IOrder } from "./order.interface";
 import { Product } from "../product/product.model";
 import { Coupon } from "../coupon/coupon.model";
 import AppError from "../../errors/appError";
@@ -7,6 +7,10 @@ import { StatusCodes } from "http-status-codes";
 
 const orderSchema = new Schema<IOrder>(
   {
+    orderId: {
+      type: String,
+      unique: true,
+    },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -88,6 +92,11 @@ const orderSchema = new Schema<IOrder>(
   }
 );
 
+const counterSchema = new Schema<ICounter>({
+  id: { type: String, required: true, unique: true },
+  seq: { type: Number, default: 0 },
+});
+
 // Pre-save hook to calculate total, discount, delivery charge, and final price
 orderSchema.pre("validate", async function (next) {
   const order = this;
@@ -155,4 +164,21 @@ orderSchema.pre("validate", async function (next) {
   next();
 });
 
+// 🪄 Auto-increment orderId
+orderSchema.pre<IOrder>("save", async function (next) {
+  if (this.isNew) {
+    const counter = await Counter.findOneAndUpdate(
+      { id: "orderId" },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
+
+    const nextSeq = counter.seq;
+    this.orderId = nextSeq.toString().padStart(6, "0"); // e.g. "000123"
+  }
+  next();
+});
+
 export const Order = model<IOrder>("Order", orderSchema);
+
+export const Counter = model<ICounter>("Counter", counterSchema);

@@ -10,6 +10,7 @@ export interface IOrderProduct {
 
 export interface IOrder extends Document {
   user: Types.ObjectId;
+  orderId: string;
   // shop: Types.ObjectId;
   products: IOrderProduct[];
   coupon: Types.ObjectId | null;
@@ -24,4 +25,9 @@ export interface IOrder extends Document {
   createdAt?: Date;
   updatedAt?: Date;
   payment?: IPayment | null;
+}
+
+export interface ICounter {
+  id: string; // name of the counter, e.g., "orderId"
+  seq: number;
 }

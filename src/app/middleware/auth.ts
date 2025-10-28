@@ -9,9 +9,9 @@ import User from "../modules/user/user.model";
 
 const auth = (...requiredRoles: UserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-   console.log({ "req from auth": req });
+  //  console.log({ "req from auth": req });
     const token = req.headers.authorization;
-    console.log({ token, requiredRoles });
+    // console.log({ token, requiredRoles });
     
     if (!token) {
       throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized!");
@@ -24,7 +24,7 @@ const auth = (...requiredRoles: UserRole[]) => {
       ) as JwtPayload;
 
       const { role, email } = decoded;
-      console.log({ role, email });
+      // console.log({ role, email });
 
       const user = await User.findOne({ email, role, isActive: true });
       // console.log({ user });

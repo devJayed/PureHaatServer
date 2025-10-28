@@ -336,7 +336,7 @@ const updateProduct = async (
   if (images && images.length > 0) {
    payload.images = images.map((image) => ({
     url: image.path,
-    altText: image.altText || "" // optional
+    altText: image.originalname || "" // optional
   }));
   }
 

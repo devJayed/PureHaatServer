@@ -32,7 +32,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Welcome to the Next Mart",
+    message: "Welcome to the PureHaat Shopping Platform ",
     version: "1.0.0",
     clientDetails: {
       ipAddress: clientIp,
@@ -47,7 +47,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
     },
     developerContact: {
       email: "jayedhossain.dev@gmail.com",
-      website: "https://doict.gov.bd",
+      website: "https://techSupport.com",
     },
   });
 });
