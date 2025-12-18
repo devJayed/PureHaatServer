@@ -8,6 +8,7 @@ import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notFound";
 
 import { sslService } from "./app/modules/sslcommerz/sslcommerz.service";
+
 import seedUser from "./app/DB/seed";
 
 const app: Application = express();

@@ -9,9 +9,11 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
     "create-module": "npx ts-node src/scripts/createModule.ts",
-    "deploy": "npm run build && vercel && vercel --prod"
+    "deploy2": "npm run build && vercel && vercel --prod",
+
+    "build": "tsc",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "@types/nodemailer": "^6.4.17",
