@@ -26,7 +26,7 @@ router.get(
 
 router.post(
     '/',
-    auth(UserRole.USER),
+    // auth(UserRole.USER),
     OrderController.createOrder
 )
 // order status change route for Moderator and Admin only

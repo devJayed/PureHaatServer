@@ -1,5 +1,5 @@
-import { Types, Document } from 'mongoose';
-import { IPayment } from '../payment/payment.interface';
+import { Types, Document } from "mongoose";
+import { IPayment } from "../payment/payment.interface";
 
 export interface IOrderProduct {
   product: Types.ObjectId;
@@ -9,7 +9,9 @@ export interface IOrderProduct {
 }
 
 export interface IOrder extends Document {
-  user: Types.ObjectId;
+  name: string;
+  mobile: string;
+  email: string;
   orderId: string;
   // shop: Types.ObjectId;
   products: IOrderProduct[];
@@ -18,10 +20,10 @@ export interface IOrder extends Document {
   discount: number;
   deliveryCharge: number;
   finalAmount: number;
-  status: 'Pending' | 'Processing' | 'Completed' | 'Cancelled';
+  status: "Pending" | "Processing" | "Completed" | "Cancelled";
   shippingAddress: string;
-  paymentMethod: 'COD' | 'Card' | 'Online';
-  paymentStatus: 'Pending' | 'Processing' | 'Paid' | 'Cancelled' | 'Failed';
+  paymentMethod: "COD" | "Card" | "Online";
+  paymentStatus: "Pending" | "Processing" | "Paid" | "Cancelled" | "Failed";
   createdAt?: Date;
   updatedAt?: Date;
   payment?: IPayment | null;

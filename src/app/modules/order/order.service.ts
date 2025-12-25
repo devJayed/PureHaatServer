@@ -16,9 +16,9 @@ import QueryBuilder from "../../builder/QueryBuilder";
 
 const createOrder = async (
   orderData: Partial<IOrder>,
-  authUser: IJwtPayload
+  // authUser: IJwtPayload
 ) => {
-  console.log({ orderData });
+  console.log({ orderData }); 
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -71,65 +71,18 @@ const createOrder = async (
     // Create the order
     const order = new Order({
       ...orderData,
-      user: authUser.userId,
+      // user: authUser.userId,
     });
 
     const createdOrder = await order.save({ session });
 
-    await createdOrder.populate("user products.product");
+    await createdOrder.populate("products.product");
 
     let result = createdOrder;
-
-    // payment starts
-    // const transactionId = generateTransactionId();
-
-    // const payment = new Payment({
-    //   user: authUser.userId,
-    //   order: createdOrder._id,
-    //   method: orderData.paymentMethod,
-    //   transactionId,
-    //   amount: createdOrder.finalAmount,
-    // });
-
-    // await payment.save({ session });
-
-    // let result;
-
-    // if (createdOrder.paymentMethod == "Online") {
-    //   result = await sslService.initPayment({
-    //     total_amount: createdOrder.finalAmount,
-    //     tran_id: transactionId,
-    //   });
-    //   result = { paymentUrl: result };
-    // } else {
-    //   result = order;
-    // }
-    // payment ends
 
     // Commit the transaction
     await session.commitTransaction();
     session.endSession();
-
-    // const pdfBuffer = await generateOrderInvoicePDF(createdOrder);
-    // const emailContent = await EmailHelper.createEmailContent(
-    //   //@ts-ignore
-    //   { userName: createdOrder.user.name || "" },
-    //   "orderInvoice"
-    // );
-
-    // const attachment = {
-    //   filename: `Invoice_${createdOrder._id}.pdf`,
-    //   content: pdfBuffer,
-    //   encoding: "base64", // if necessary
-    // };
-
-    // await EmailHelper.sendEmail(
-    //   //@ts-ignore
-    //   createdOrder.user.email,
-    //   emailContent,
-    //   "Order confirmed!",
-    //   attachment
-    // );
     return result;
   } catch (error) {
     console.log(error);
