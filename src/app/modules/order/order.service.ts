@@ -18,7 +18,7 @@ const createOrder = async (
   orderData: Partial<IOrder>,
   // authUser: IJwtPayload
 ) => {
-  console.log({ orderData }); 
+  // console.log({ orderData }); 
   const session = await mongoose.startSession();
   session.startTransaction();
 

@@ -9,7 +9,7 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
   const result = await OrderService.createOrder(
     req.body,
     // req.user as IJwtPayload
-  );
+  ); 
 
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
@@ -93,7 +93,7 @@ const changePaymentStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const OrderController = {
+export const OrderController = { 
   createOrder,
   getMyShopOrders,
   getOrderDetails,
