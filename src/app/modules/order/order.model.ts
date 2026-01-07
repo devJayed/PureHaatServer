@@ -1,9 +1,6 @@
-import { Schema, Types, model } from "mongoose";
-import { ICounter, IOrder } from "./order.interface";
+import { Schema, model } from "mongoose";
 import { Product } from "../product/product.model";
-import { Coupon } from "../coupon/coupon.model";
-import AppError from "../../errors/appError";
-import { StatusCodes } from "http-status-codes";
+import { ICounter, IOrder } from "./order.interface";
 
 const orderSchema = new Schema<IOrder>(
   {
@@ -76,8 +73,8 @@ const orderSchema = new Schema<IOrder>(
     },
     status: {
       type: String,
-      enum: ["Pending", "Processing", "Completed", "Cancelled"],
-      default: "Pending",
+      enum: ["Received", "In-Processing", "Completed", "Cancelled"],
+      default: "Received",
     },
     shippingAddress: {
       type: String,
@@ -90,7 +87,7 @@ const orderSchema = new Schema<IOrder>(
     },
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Paid", "Failed"],
+      enum: ["Pending", "On-the-Way", "Paid", "Cancelled"],
       default: "Pending",
     },
   },

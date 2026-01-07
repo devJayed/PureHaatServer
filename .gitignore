@@ -51,3 +51,4 @@ coverage/
 .vercel
 .DS_Store
 
+.env*.local

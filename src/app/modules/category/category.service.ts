@@ -3,11 +3,10 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/appError";
 import { IImageFile } from "../../interface/IImageFile";
 import { IJwtPayload } from "../auth/auth.interface";
+import { Product } from "../product/product.model";
+import { UserRole } from "../user/user.interface";
 import { ICategory } from "./category.interface";
 import { Category } from "./category.model";
-import User from "../user/user.model";
-import { UserRole } from "../user/user.interface";
-import { Product } from "../product/product.model";
 
 const createCategory = async (
   categoryData: Partial<ICategory>,
@@ -65,7 +64,7 @@ const getAllCategory = async (query: Record<string, unknown>) => {
     }
   });
 
-  // console.log({hierarchy});
+  // console.log({ hierarchy });
 
   return {
     meta,

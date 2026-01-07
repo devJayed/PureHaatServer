@@ -1,63 +1,60 @@
-import bcrypt from 'bcrypt';
-import config from '../config';
-import { UserRole } from '../modules/user/user.interface';
-import User from '../modules/user/user.model';
+import bcrypt from "bcrypt";
+import { UserRole } from "../modules/user/user.interface";
+import User from "../modules/user/user.model";
 
-const adminUser = {
-    email: 'admin@gmail.com',
-    password: "admin123",
-    name: 'Admin',
-    role: UserRole.ADMIN,
-    clientInfo: {
-        device: 'pc',
-        browser: 'Unknown',
-        ipAddress: '127.0.0.1',
-        pcName: 'localhost',
-        os: 'Unknown',
-        userAgent: 'Seed Script',
-    }
-};
-const deliveryUser = {
-    email: 'delivery@gmail.com',
-    password: "123456",
-    name: 'Delivery',
-    role: UserRole.DELIVERY,
-    clientInfo: {
-        device: 'pc',
-        browser: 'Unknown',
-        ipAddress: '127.0.0.1',
-        pcName: 'localhost',
-        os: 'Unknown',
-        userAgent: 'Seed Script',
-    }
-};
-
-const seedUser = async () => {
+export const seedUser = async (): Promise<void> => {
   try {
-    // Check if an admin already exists
+    // console.log("🌱 Seeding users...");
     const isAdminExist = await User.findOne({ role: UserRole.ADMIN });
-    // Check if a delivery man already exists
     const isDeliveryExist = await User.findOne({ role: UserRole.DELIVERY });
 
-    // Create admin if not exist
     if (!isAdminExist) {
-      await User.create(adminUser);
-      console.log("✅ Admin user created.");
+      const hashedPassword = await bcrypt.hash("admin123", 10);
+
+      await User.create({
+        email: "admin@gmail.com",
+        password: hashedPassword,
+        name: "Admin",
+        role: UserRole.ADMIN,
+        clientInfo: {
+          device: "pc",
+          browser: "Unknown",
+          ipAddress: "127.0.0.1",
+          pcName: "localhost",
+          os: "Unknown",
+          userAgent: "Seed Script",
+        },
+      });
+
+      // console.log("✅ Admin user created");
     }
 
-    // Create delivery user if not exist
     if (!isDeliveryExist) {
-      await User.create(deliveryUser);
-      console.log("✅ Delivery user created.");
+      const hashedPassword = await bcrypt.hash("123456", 10);
+
+      await User.create({
+        email: "delivery@gmail.com",
+        password: hashedPassword,
+        name: "Delivery",
+        role: UserRole.DELIVERY,
+        clientInfo: {
+          device: "pc",
+          browser: "Unknown",
+          ipAddress: "127.0.0.1",
+          pcName: "localhost",
+          os: "Unknown",
+          userAgent: "Seed Script",
+        },
+      });
+
+      // console.log("✅ Delivery user created");
     }
 
     if (isAdminExist && isDeliveryExist) {
-      console.log("⚠️ Admin and Delivery users already exist.");
+      // console.log("ℹ️ Admin & Delivery users already exist");
     }
   } catch (error) {
     console.error("❌ Error seeding users:", error);
+    throw error;
   }
 };
-
-
-export default seedUser;
