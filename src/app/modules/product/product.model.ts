@@ -1,6 +1,6 @@
-import mongoose, { Schema, model, Document, Types } from "mongoose";
-import { IProduct } from "./product.interface";
+import { Schema, model } from "mongoose";
 import { FlashSale } from "../flashSell/flashSale.model";
+import { IProduct } from "./product.interface";
 
 // ======================
 // Product Schema
@@ -13,12 +13,12 @@ const productSchema = new Schema<IProduct>(
       unique: true,
       trim: true,
     },
-    slug: {
-      type: String,
-      required: [true, "Product slug is required"],
-      unique: true,
-      trim: true,
-    },
+    // slug: {
+    //   type: String,
+    //   required: [true, "Product slug is required"],
+    //   unique: true,
+    //   trim: true,
+    // },
     seoTitle: { type: String, trim: true },
     seoDescription: { type: String, trim: true },
     seoKeywords: { type: [String], default: [] },
@@ -44,12 +44,9 @@ const productSchema = new Schema<IProduct>(
       ref: "Category",
       required: [true, "Category is required"],
     },
-    subCategory: {
-      type: Schema.Types.ObjectId,
-      ref: "SubCategory",
-      default: null,
+    subcategory: {
+      type: String,
     },
-
     images: [
       {
         url: { type: String, required: true },
@@ -87,15 +84,15 @@ const productSchema = new Schema<IProduct>(
 );
 
 // Middleware to auto-generate the slug before saving
-productSchema.pre<IProduct>("validate", function (next) {
-  if (this.isModified("name") && !this.slug) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/ /g, "-")
-      .replace(/[^\w-]+/g, "");
-  }
-  next();
-});
+// productSchema.pre<IProduct>("validate", function (next) {
+//   if (this.isModified("name") && !this.slug) {
+//     this.slug = this.name
+//       .toLowerCase()
+//       .replace(/ /g, "-")
+//       .replace(/[^\w-]+/g, "");
+//   }
+//   next();
+// });
 
 // Middleware to auto-calculate the OfferPrice in case of flashSale
 productSchema.methods.calculateOfferPrice = async function () {

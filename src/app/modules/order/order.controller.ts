@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import catchAsync from "../../utils/catchAsync";
-import { OrderService } from "./order.service";
-import { IJwtPayload } from "../auth/auth.interface";
-import sendResponse from "../../utils/sendResponse";
 import { StatusCodes } from "http-status-codes";
+import catchAsync from "../../utils/catchAsync";
+import sendResponse from "../../utils/sendResponse";
+import { IJwtPayload } from "../auth/auth.interface";
+import { OrderService } from "./order.service";
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const result = await OrderService.createOrder(
-    req.body,
+    req.body
     // req.user as IJwtPayload
-  ); 
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
@@ -20,7 +20,8 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyShopOrders = catchAsync(async (req: Request, res: Response) => {
-  console.log({ req });
+  // console.log("order req query:", req.query);
+  // console.log("order req user:", req.user);
   const result = await OrderService.getMyShopOrders(
     req.query,
     req.user as IJwtPayload
@@ -93,7 +94,7 @@ const changePaymentStatus = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const OrderController = { 
+export const OrderController = {
   createOrder,
   getMyShopOrders,
   getOrderDetails,

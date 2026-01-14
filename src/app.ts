@@ -1,15 +1,13 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
-import cookieParser from "cookie-parser";
-import os from "os";
 import { StatusCodes } from "http-status-codes";
-import router from "./app/routes";
+import os from "os";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notFound";
+import router from "./app/routes";
 
-import { sslService } from "./app/modules/sslcommerz/sslcommerz.service";
-
-import seedUser from "./app/DB/seed";
+import { seedUser } from "./app/DB/seed";
 
 const app: Application = express();
 

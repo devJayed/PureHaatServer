@@ -7,18 +7,18 @@ export interface IProduct extends Document {
   sku?: string;
 
   name: string;
-  slug: string;
+  // slug: string;
   seoTitle: string;
   seoDescription: string;
   seoKeywords: string[];
 
   price: number;
-  offerPrice?: number | null;
+  offerPrice?: number;
   stock: number;
   weight: number | null;
 
   category: Types.ObjectId;
-  subCategory?: Types.ObjectId;
+  subcategory?: string;
 
   images: {
     url: string;

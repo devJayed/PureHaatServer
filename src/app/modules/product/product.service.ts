@@ -1,23 +1,20 @@
 import { StatusCodes } from "http-status-codes";
+import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/appError";
-import { IImageFile, IImageFiles } from "../../interface/IImageFile";
+import { IImageFiles } from "../../interface/IImageFile";
 import { IJwtPayload } from "../auth/auth.interface";
+import { Category } from "../category/category.model";
+import { FlashSale } from "../flashSell/flashSale.model";
+import { Review } from "../review/review.model";
 import User from "../user/user.model";
 import { IProduct } from "./product.interface";
-import { Category } from "../category/category.model";
 import { Product } from "./product.model";
-import QueryBuilder from "../../builder/QueryBuilder";
-import { ProductSearchableFields } from "./product.constant";
-import { Order } from "../order/order.model";
-import { IOrderProduct } from "../order/order.interface";
-import { Review } from "../review/review.model";
-import { FlashSale } from "../flashSell/flashSale.model";
-import { off } from "process";
 
 const createProduct = async (
   productData: Partial<IProduct>,
   productImages: IImageFiles
 ) => {
+  console.log("Product Data Backend:", { productData });
   const { images } = productImages;
   if (!images || images.length === 0) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Product images are required.");
@@ -101,87 +98,86 @@ const createProduct = async (
 // Use this section
 
 const getAllProduct = async (query: Record<string, unknown>) => {
-   const {
-      minPrice,
-      maxPrice,
-      categories,
-      inStock,
-      ratings,
-      ...pQuery
-   } = query;
+  const { minPrice, maxPrice, categories, inStock, ratings, ...pQuery } = query;
 
-   // Build the filter object
-   const filter: Record<string, any> = {};
+  // Build the filter object
+  const filter: Record<string, any> = {};
 
-   // Filter by categories
-   if (categories) {
-      const categoryArray = typeof categories === 'string'
-         ? categories.split(',')
-         : Array.isArray(categories)
-            ? categories
-            : [categories];
-      filter.category = { $in: categoryArray };
-   }
+  // Filter by categories
+  if (categories) {
+    const categoryArray =
+      typeof categories === "string"
+        ? categories.split(",")
+        : Array.isArray(categories)
+        ? categories
+        : [categories];
+    filter.category = { $in: categoryArray };
+  }
 
-   // Filter by in stock/out of stock
-   if (inStock !== undefined) {
-      filter.stock = inStock === 'true' ? { $gt: 0 } : 0;
-   }
+  // Filter by in stock/out of stock
+  if (inStock !== undefined) {
+    filter.stock = inStock === "true" ? { $gt: 0 } : 0;
+  }
 
-   // Filter by ratings
-   if (ratings) {
-      const ratingArray = typeof ratings === 'string'
-         ? ratings.split(',')
-         : Array.isArray(ratings) ? ratings : [ratings];
-      filter.averageRating = { $in: ratingArray.map(Number) };
-   }
+  // Filter by ratings
+  if (ratings) {
+    const ratingArray =
+      typeof ratings === "string"
+        ? ratings.split(",")
+        : Array.isArray(ratings)
+        ? ratings
+        : [ratings];
+    filter.averageRating = { $in: ratingArray.map(Number) };
+  }
 
-   const productQuery = new QueryBuilder(
-      Product.find(filter)
-         .populate('category', 'name'),
-      pQuery
-   )
-      .search(['name', 'description'])
-      .filter()
-      .sort()
-      .paginate()
-      .fields()
-      .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
+  const productQuery = new QueryBuilder(
+    Product.find(filter).populate("category", "name"),
+    pQuery
+  )
+    .search(["name", "description"])
+    .filter()
+    .sort()
+    .paginate()
+    .fields()
+    .priceRange(Number(minPrice) || 0, Number(maxPrice) || Infinity);
 
-   const products = await productQuery.modelQuery.lean();
+  const products = await productQuery.modelQuery.lean();
 
-   const meta = await productQuery.countTotal();
+  const meta = await productQuery.countTotal();
 
-   // Get Flash Sale Discounts
-   const productIds = products.map((product: any) => product._id);
+  // Get Flash Sale Discounts
+  const productIds = products.map((product: any) => product._id);
 
-   const flashSales = await FlashSale.find({
-      product: { $in: productIds },
-      discountPercentage: { $gt: 0 },
-   }).select('product discountPercentage');
+  const flashSales = await FlashSale.find({
+    product: { $in: productIds },
+    discountPercentage: { $gt: 0 },
+  }).select("product discountPercentage");
 
-   const flashSaleMap = flashSales.reduce((acc, { product, discountPercentage }) => {
+  const flashSaleMap = flashSales.reduce(
+    (acc, { product, discountPercentage }) => {
       //@ts-ignore
       acc[product.toString()] = discountPercentage;
       return acc;
-   }, {});
+    },
+    {}
+  );
 
-   // Add offer price to products
-   const updatedProducts = products.map((product: any) => {
-      //@ts-ignore
-      const discountPercentage = flashSaleMap[product._id.toString()];
-      if (discountPercentage) {
-         product.offerPrice = product.price * (1 - discountPercentage / 100);
-      } else {
-         product.offerPrice = null;
-      }
-      return product;
-   });
+  // Add offer price to products
+  const updatedProducts = products.map((product: any) => {
+    //@ts-ignore
+    const discountPercentage = flashSaleMap[product._id.toString()];
+    if (discountPercentage) {
+      product.offerPrice = product.price * (1 - discountPercentage / 100);
+    } else {
+      product.offerPrice = null;
+    }
+    return product;
+  });
 
-   return {
-      meta,
-      result: updatedProducts,
-   };
+  return {
+    meta,
+    result: updatedProducts,
+  };
 };
 
 // const getTrendingProducts = async (limit: number) => {
@@ -334,31 +330,31 @@ const updateProduct = async (
   }
 
   if (images && images.length > 0) {
-   payload.images = images.map((image) => ({
-    url: image.path,
-    altText: image.originalname || "" // optional
-  }));
+    payload.images = images.map((image) => ({
+      url: image.path,
+      altText: image.originalname || "", // optional
+    }));
   }
 
   return await Product.findByIdAndUpdate(productId, payload, { new: true });
 };
 
 const deleteProduct = async (productId: string, authUser: IJwtPayload) => {
-   console.log({productId});
-   const user = await User.findById(authUser.userId);
-   
-   const product = await Product.findOne({
-      _id: productId,
-   });
+  // console.log({productId});
+  const user = await User.findById(authUser.userId);
 
-   if (!user?.isActive) {
-      throw new AppError(StatusCodes.BAD_REQUEST, 'User is not active');
-   }
-   if (!product) {
-      throw new AppError(StatusCodes.NOT_FOUND, 'Product Not Found');
-   }
+  const product = await Product.findOne({
+    _id: productId,
+  });
 
-   return await Product.findByIdAndDelete(productId);
+  if (!user?.isActive) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User is not active");
+  }
+  if (!product) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Product Not Found");
+  }
+
+  return await Product.findByIdAndDelete(productId);
 };
 
 export const ProductService = {

@@ -1,8 +1,8 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 import { ICategory } from "./category.interface";
 
 // Extend Mongoose Document with ICategory
-interface ICategoryDocument extends Document, ICategory { }
+interface ICategoryDocument extends Document, ICategory {}
 
 // Define the schema
 const categorySchema = new Schema<ICategoryDocument>(
@@ -13,12 +13,12 @@ const categorySchema = new Schema<ICategoryDocument>(
       unique: true,
       trim: true,
     },
-    slug: {
-      type: String,
-      required: [true, "Category slug is required"],
-      unique: true,
-      trim: true,
-    },
+    // slug: {
+    //   type: String,
+    //   required: [true, "Category slug is required"],
+    //   unique: true,
+    //   trim: true,
+    // },
     description: {
       type: String,
       trim: true,
@@ -47,13 +47,16 @@ const categorySchema = new Schema<ICategoryDocument>(
   }
 );
 // Middleware to auto-generate the slug before saving
-categorySchema.pre<ICategory>("validate", function (next) {
-  if (this instanceof Document) {
-    if (this.isModified("name") && !this.slug) {
-      this.slug = this.name.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
-    }
-  }
-  next();
-});
+// categorySchema.pre<ICategory>("validate", function (next) {
+//   if (this instanceof Document) {
+//     if (this.isModified("name") && !this.slug) {
+//       this.slug = this.name
+//         .toLowerCase()
+//         .replace(/ /g, "-")
+//         .replace(/[^\w-]+/g, "");
+//     }
+//   }
+//   next();
+// });
 
 export const Category = model<ICategoryDocument>("Category", categorySchema);

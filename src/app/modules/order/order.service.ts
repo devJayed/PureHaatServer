@@ -1,32 +1,28 @@
+import { StatusCodes } from "http-status-codes";
 import mongoose, { Types } from "mongoose";
+import QueryBuilder from "../../builder/QueryBuilder";
+import AppError from "../../errors/appError";
 import { IJwtPayload } from "../auth/auth.interface";
 import { Coupon } from "../coupon/coupon.model";
+import { Payment } from "../payment/payment.model";
+import { Product } from "../product/product.model";
 import { IOrder } from "./order.interface";
 import { Order } from "./order.model";
-import { Product } from "../product/product.model";
-import { Payment } from "../payment/payment.model";
-import { generateTransactionId } from "../payment/payment.utils";
-import { sslService } from "../sslcommerz/sslcommerz.service";
-import { generateOrderInvoicePDF } from "../../utils/generateOrderInvoicePDF";
-import { EmailHelper } from "../../utils/emailHelper";
-import User from "../user/user.model";
-import AppError from "../../errors/appError";
-import { StatusCodes } from "http-status-codes";
-import QueryBuilder from "../../builder/QueryBuilder";
 
 const createOrder = async (
-  orderData: Partial<IOrder>,
+  orderData: Partial<IOrder>
   // authUser: IJwtPayload
 ) => {
-  // console.log({ orderData }); 
+  // console.log({ orderData });
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
     if (orderData.products) {
       for (const productItem of orderData.products) {
-        const product = await Product.findById(productItem.product)
-        .session(session);
+        const product = await Product.findById(productItem.product).session(
+          session
+        );
 
         if (product) {
           if (product.isActive === false) {
@@ -97,19 +93,23 @@ const getMyShopOrders = async (
   query: Record<string, unknown>,
   authUser: IJwtPayload
 ) => {
-  console.log({query, authUser});
+  // console.log("service query:", { query });
+  // console.log("service authUser:", { authUser });
 
   const orderQuery = new QueryBuilder(
-    Order.find().populate("user products.product"),
+    Order.find().populate("products.product"),
     query
   )
-    .search(["user.name", "user.email", "products.product.name"])
+    .search(["user.name", "products.product.name"])
     .filter()
     .sort()
     .paginate()
     .fields();
 
+  // const orderQuery = new QueryBuilder(Order.find(), query);
+
   const result = await orderQuery.modelQuery;
+  // console.log("service result", { result });
 
   const meta = await orderQuery.countTotal();
 
@@ -167,7 +167,7 @@ const changeOrderStatus = async (
     { status },
     { new: true }
   );
-  console.log({order});
+  // console.log({ order });
   return order;
 };
 

@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 export interface ICategory extends Document {
   name: string;
-  slug: string;
+  // slug: string;
   description?: string;
   parent?: Types.ObjectId;
   isActive: boolean;

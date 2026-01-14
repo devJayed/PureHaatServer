@@ -1,14 +1,14 @@
-import { Router } from 'express';
-import { OrderController } from './order.controller';
-import auth from '../../middleware/auth';
-import { UserRole } from '../user/user.interface';
+import { Router } from "express";
+import auth from "../../middleware/auth";
+import { UserRole } from "../user/user.interface";
+import { OrderController } from "./order.controller";
 
 const router = Router();
 
 router.get(
-    '/my-shop-orders',
-    auth(UserRole.USER, UserRole.ADMIN, UserRole.DELIVERY),
-    OrderController.getMyShopOrders
+  "/my-shop-orders",
+  auth(UserRole.DELIVERY, UserRole.ADMIN),
+  OrderController.getMyShopOrders
 );
 
 // router.get(
@@ -18,26 +18,26 @@ router.get(
 // );
 
 router.get(
-    '/:orderId',
-    // auth(UserRole.USER),
-     auth(UserRole.USER, UserRole.ADMIN, UserRole.DELIVERY),
-    OrderController.getOrderDetails
+  "/:orderId",
+  // auth(UserRole.USER),
+  auth(UserRole.USER, UserRole.ADMIN, UserRole.DELIVERY),
+  OrderController.getOrderDetails
 );
 
 router.post(
-    '/',
-    // auth(UserRole.USER),
-    OrderController.createOrder
-)
+  "/",
+  // auth(UserRole.USER),
+  OrderController.createOrder
+);
 // order status change route for Moderator and Admin only
 router.patch(
-    '/:orderId/status',
-    auth(UserRole.ADMIN),
-    OrderController.changeOrderStatus
-)
+  "/:orderId/status",
+  auth(UserRole.ADMIN),
+  OrderController.changeOrderStatus
+);
 // delivery route for deliveryMan and Admin only
 router.patch(
-  '/:orderId/payment-status',
+  "/:orderId/payment-status",
   auth(UserRole.DELIVERY),
   OrderController.changePaymentStatus
 );
