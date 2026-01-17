@@ -7,7 +7,8 @@ import { seedUser } from "./app/DB/seed";
 let server: Server | null = null;
 
 // Fail fast if DB is not connected
-// mongoose.set("bufferCommands", false);
+mongoose.set("bufferCommands", false);
+mongoose.set("bufferTimeoutMS", 0);
 
 // Database connection
 async function connectToDatabase() {

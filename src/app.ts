@@ -7,7 +7,7 @@ import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import notFound from "./app/middleware/notFound";
 import router from "./app/routes";
 
-import { seedUser } from "./app/DB/seed";
+// import { seedUser } from "./app/DB/seed";
 
 const app: Application = express();
 
@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", router);
 
-seedUser();
+// seedUser();
 
 // Test route
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
@@ -41,7 +41,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
       hostname: serverHostname,
       platform: serverPlatform,
       uptime: `${Math.floor(serverUptime / 60 / 60)} hours ${Math.floor(
-        (serverUptime / 60) % 60
+        (serverUptime / 60) % 60,
       )} minutes`,
     },
     developerContact: {

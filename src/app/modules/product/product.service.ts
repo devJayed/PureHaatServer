@@ -12,9 +12,9 @@ import { Product } from "./product.model";
 
 const createProduct = async (
   productData: Partial<IProduct>,
-  productImages: IImageFiles
+  productImages: IImageFiles,
 ) => {
-  console.log("Product Data Backend:", { productData });
+  // console.log("Product Data Backend:", { productData });
   const { images } = productImages;
   if (!images || images.length === 0) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Product images are required.");
@@ -109,8 +109,8 @@ const getAllProduct = async (query: Record<string, unknown>) => {
       typeof categories === "string"
         ? categories.split(",")
         : Array.isArray(categories)
-        ? categories
-        : [categories];
+          ? categories
+          : [categories];
     filter.category = { $in: categoryArray };
   }
 
@@ -125,14 +125,14 @@ const getAllProduct = async (query: Record<string, unknown>) => {
       typeof ratings === "string"
         ? ratings.split(",")
         : Array.isArray(ratings)
-        ? ratings
-        : [ratings];
+          ? ratings
+          : [ratings];
     filter.averageRating = { $in: ratingArray.map(Number) };
   }
 
   const productQuery = new QueryBuilder(
     Product.find(filter).populate("category", "name"),
-    pQuery
+    pQuery,
   )
     .search(["name", "description"])
     .filter()
@@ -159,7 +159,7 @@ const getAllProduct = async (query: Record<string, unknown>) => {
       acc[product.toString()] = discountPercentage;
       return acc;
     },
-    {}
+    {},
   );
 
   // Add offer price to products
@@ -311,7 +311,7 @@ const updateProduct = async (
   productId: string,
   payload: Partial<IProduct>,
   productImages: IImageFiles,
-  authUser: IJwtPayload
+  authUser: IJwtPayload,
 ) => {
   const { images } = productImages;
 
