@@ -20,11 +20,6 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       default: "",
     },
-    // shop: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Shop",
-    //   required: true,
-    // },
     products: [
       {
         product: {
@@ -37,10 +32,10 @@ const orderSchema = new Schema<IOrder>(
           required: true,
           min: 1,
         },
-        unitPrice: {
-          type: Number,
-          required: true,
-        },
+        // unitPrice: {
+        //   type: Number,
+        //   required: true,
+        // },
         color: {
           type: String,
           required: true,
@@ -93,7 +88,7 @@ const orderSchema = new Schema<IOrder>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const counterSchema = new Schema<ICounter>({
@@ -128,7 +123,7 @@ orderSchema.pre("validate", async function (next) {
     let productPrice = product.price;
     if (offerPrice) productPrice = Number(offerPrice);
 
-    item.unitPrice = productPrice;
+    // item.unitPrice = productPrice;
     const price = productPrice * item.quantity;
     // console.log(price);
     totalAmount += price;
@@ -174,7 +169,7 @@ orderSchema.pre<IOrder>("save", async function (next) {
     const counter = await Counter.findOneAndUpdate(
       { id: "orderId" },
       { $inc: { seq: 1 } },
-      { new: true, upsert: true }
+      { new: true, upsert: true },
     );
 
     const nextSeq = counter.seq;
