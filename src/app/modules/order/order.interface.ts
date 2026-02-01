@@ -4,7 +4,7 @@ import { IPayment } from "../payment/payment.interface";
 export interface IOrderProduct {
   product: Types.ObjectId;
   quantity: number;
-  unitPrice: number;
+  // unitPrice: number;
   color: string;
 }
 
@@ -21,6 +21,7 @@ export interface IOrder extends Document {
   deliveryCharge: number;
   finalAmount: number;
   status: "Received" | "In-Processing" | "Completed" | "Cancelled";
+  city: string;
   shippingAddress: string;
   paymentMethod: "COD" | "Card" | "Online";
   paymentStatus: "Pending" | "On-the-Way" | "Paid" | "Cancelled";

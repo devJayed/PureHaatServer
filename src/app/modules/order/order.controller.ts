@@ -4,13 +4,19 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { IJwtPayload } from "../auth/auth.interface";
 import { OrderService } from "./order.service";
+import { createOrderSchema } from "./order.validation";
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
+  // 🔐 Validate request body (throws ZodError if invalid)
+  const validatedData: any = createOrderSchema.parse(req.body);
+
+  // 🚀 Create order
   const result = await OrderService.createOrder(
-    req.body
+    validatedData,
     // req.user as IJwtPayload
   );
 
+  // ✅ Unified success response
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
     success: true,
@@ -24,7 +30,7 @@ const getMyShopOrders = catchAsync(async (req: Request, res: Response) => {
   // console.log("order req user:", req.user);
   const result = await OrderService.getMyShopOrders(
     req.query,
-    req.user as IJwtPayload
+    req.user as IJwtPayload,
   );
 
   sendResponse(res, {
@@ -50,7 +56,7 @@ const getOrderDetails = catchAsync(async (req: Request, res: Response) => {
 const getMyOrders = catchAsync(async (req: Request, res: Response) => {
   const result = await OrderService.getMyOrders(
     req.query,
-    req.user as IJwtPayload
+    req.user as IJwtPayload,
   );
 
   sendResponse(res, {
@@ -67,7 +73,7 @@ const changeOrderStatus = catchAsync(async (req: Request, res: Response) => {
   const result = await OrderService.changeOrderStatus(
     req.params.orderId,
     status,
-    req.user as IJwtPayload
+    req.user as IJwtPayload,
   );
 
   sendResponse(res, {
@@ -83,7 +89,7 @@ const changePaymentStatus = catchAsync(async (req: Request, res: Response) => {
   const result = await OrderService.changePaymentStatus(
     req.params.orderId,
     paymentStatus,
-    req.user as IJwtPayload
+    req.user as IJwtPayload,
   );
 
   sendResponse(res, {
