@@ -11,9 +11,9 @@ import { Order } from "./order.model";
 
 const createOrder = async (
   orderData: Partial<IOrder>,
-  // authUser: IJwtPayload
+  // authUser: IJwtPayload ; for v1 is not used
 ) => {
-  console.log({ orderData });
+  // console.log({ orderData });
   // ✅ Transform products safely
 
   const session = await mongoose.startSession();
